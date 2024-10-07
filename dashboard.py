@@ -25,7 +25,7 @@ st.subheader("Pengaruh Kondisi Cuaca terhadap Jumlah Penyewaan Sepeda")
 weathersit_counts = {1: 2257952, 2: 996858, 3: 37869}
 labels = ['Cerah', 'Mendung', 'Hujan']
 counts = [weathersit_counts[1], weathersit_counts[2], weathersit_counts[3]]
-colors = ['#FF0000', '#FFFF00', '#008000']
+colors = ['#FF0000', '#D3D3D3', '#D3D3D3']
 
 plt.figure(figsize=(8, 5))
 plt.bar(labels, counts, color=colors)
@@ -39,7 +39,7 @@ st.pyplot(plt)
 st.subheader("Perbedaan Jumlah Sepeda yang Disewa antara Weekday dan Weekend")
 day_df['day_type'] = day_df['weekday'].apply(lambda x: 'Akhir Pekan' if x in [5, 6] else 'Hari Kerja')
 day_type_counts = day_df.groupby('day_type')['cnt'].sum().reset_index()
-colors = ['#FF0000', '#008000']
+colors = ['#D3D3D3', '#008000']
 
 plt.figure(figsize=(8, 5))
 sns.barplot(x='day_type', y='cnt', data=day_type_counts, palette=colors)
@@ -75,12 +75,24 @@ st.write("Hasil Clustering:")
 st.write(data['Cluster'].value_counts())
 
 # Visualisasi clustering
+# plt.figure(figsize=(10, 6))
+# plt.hist(data['cnt'], bins=bins, color='skyblue', alpha=0.7, edgecolor='black')
+# plt.title('Distribusi Jumlah Penyewaan Sepeda')
+# plt.xlabel('Jumlah Penyewaan')
+# plt.ylabel('Frekuensi')
+# plt.grid(axis='y')
+# st.pyplot(plt)
+
 plt.figure(figsize=(10, 6))
-plt.hist(data['cnt'], bins=bins, color='skyblue', alpha=0.7, edgecolor='black')
+plt.scatter(data.index, data['cnt'], c=data['Cluster'].cat.codes, cmap='viridis', alpha=0.7, edgecolor='black')
 plt.title('Distribusi Jumlah Penyewaan Sepeda')
-plt.xlabel('Jumlah Penyewaan')
-plt.ylabel('Frekuensi')
-plt.grid(axis='y')
+plt.xlabel('Indeks Data')
+plt.ylabel('Jumlah Penyewaan')
+plt.grid(True)
+handles = [plt.Line2D([0], [0], marker='o', color='w', label=label, 
+                       markerfacecolor=plt.cm.viridis(i/len(labels)), markersize=10) 
+           for i, label in enumerate(labels)]
+plt.legend(handles=handles, title='Cluster')
 st.pyplot(plt)
 
 # RFM Analysis
